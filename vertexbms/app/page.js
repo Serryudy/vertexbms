@@ -6,6 +6,7 @@ import NeatoHelp from '@/components/NeatoHelp';
 import DownloadCTA from '@/components/DownloadCTA';
 import IPhoneDisplay from '@/components/IPhoneDisplay';
 import AnimationSection from '@/components/Animation';
+import Slideshow from '@/components/Slideshow';
 
 export default function Home() {
   return (
@@ -59,6 +60,9 @@ export default function Home() {
         <section style={{ height: '100px', position: 'relative', paddingTop: '100px', top: '200px' }}>
           <AnimationSection />
         </section>
+        <section style={{ height: '100px', position: 'relative', paddingTop: '100px', top: '200px' }}>
+          <Slideshow   />  
+        </section>  
       </div>
     </div>
   );
