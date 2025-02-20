@@ -1,68 +1,71 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import ProfileSection from './Step';
 
 const Slideshow = () => {
-    const [isDragging, setIsDragging] = useState(false);
-    const [startX, setStartX] = useState(0);
-    const [scrollLeft, setScrollLeft] = useState(0);
     const containerRef = useRef(null);
+    const intervalRef = useRef(null);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const observerRef = useRef(null);
 
-    // Inline styles for the container and slides
+    // Container styles
     const containerStyles = {
         display: 'flex',
         overflowX: 'auto',
         scrollSnapType: 'x mandatory',
         scrollBehavior: 'smooth',
         width: '100%',
-        gap: '10px', // Reduced gap to bring slides closer together
-        cursor: isDragging ? 'grabbing' : 'grab', // Change cursor on drag
+        gap: '80px',
+        scrollbarWidth: 'none',
+        msOverflowStyle: 'none',
+        padding: '0 40px',
     };
 
-    const slideStyles = {
-        flex: '0 0 auto',
-        scrollSnapAlign: 'start',
-        width: '100%', // Each slide takes the full width of the container
+    // Auto-scroll functionality
+    const startAutoScroll = () => {
+        intervalRef.current = setInterval(() => {
+            setCurrentIndex(prev => (prev + 1) % 3); // For 3 slides
+        }, 1000); // 1 second interval
     };
 
-    // Handle mouse down event
-    const handleMouseDown = (e) => {
-        setIsDragging(true);
-        setStartX(e.pageX - containerRef.current.offsetLeft);
-        setScrollLeft(containerRef.current.scrollLeft);
-    };
+    // Scroll to slide
+    useEffect(() => {
+        if (containerRef.current) {
+            const container = containerRef.current;
+            const slide = container.children[currentIndex];
+            container.scrollTo({
+                left: slide.offsetLeft - 40, // Adjust for padding
+                behavior: 'smooth'
+            });
+        }
+    }, [currentIndex]);
 
-    // Handle mouse move event
-    const handleMouseMove = (e) => {
-        if (!isDragging) return;
-        e.preventDefault();
-        const x = e.pageX - containerRef.current.offsetLeft;
-        const walk = (x - startX) * 2; // Adjust drag sensitivity
-        containerRef.current.scrollLeft = scrollLeft - walk;
-    };
+    // Intersection Observer setup
+    useEffect(() => {
+        observerRef.current = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    startAutoScroll();
+                } else {
+                    clearInterval(intervalRef.current);
+                }
+            });
+        }, { threshold: 0.5 });
 
-    // Handle mouse up event
-    const handleMouseUp = () => {
-        setIsDragging(false);
-    };
+        if (containerRef.current) {
+            observerRef.current.observe(containerRef.current);
+        }
 
-    // Handle mouse leave event
-    const handleMouseLeave = () => {
-        setIsDragging(false);
-    };
+        return () => {
+            observerRef.current?.disconnect();
+            clearInterval(intervalRef.current);
+        };
+    }, []);
 
     return (
-        <div
-            ref={containerRef}
-            className="container"
-            style={containerStyles}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseLeave}
-        >
-            <div style={slideStyles}>
+        <div ref={containerRef} style={containerStyles}>
+            <div style={{ flex: '0 0 70%', scrollSnapAlign: 'start' }}>
                 <ProfileSection
                     color="#ff9d3a"
                     number="01"
@@ -72,7 +75,7 @@ const Slideshow = () => {
                     image2="/orangeV.png"
                 />
             </div>
-            <div style={slideStyles}>
+            <div style={{ flex: '0 0 70%', scrollSnapAlign: 'start' }}>
                 <ProfileSection
                     color="#087c94"
                     number="02"
@@ -82,7 +85,7 @@ const Slideshow = () => {
                     image2="/BlueV.png"
                 />
             </div>
-            <div style={slideStyles}>
+            <div style={{ flex: '0 0 70%', scrollSnapAlign: 'start' }}>
                 <ProfileSection
                     color="#08643c"
                     number="03"
