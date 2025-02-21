@@ -8,7 +8,8 @@ const DownloadCTA = ({ title, subtitle }) => {
       border: 'none',
       padding: '10px 30px',
       borderRadius: '28px',
-      textAlign: 'left'
+      textAlign: 'left',
+      height: '58px'
     },
     buttonText: {
       fontSize: '0.8rem',

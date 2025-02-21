@@ -51,11 +51,20 @@ a {
   width: fit-content;
 }
 
-.main-page {
+.first-page {
   -webkit-overflow-scrolling: touch;
   background-color: #FAF9F6;
-  -ms-overflow-style: none;
   scrollbar-width: none;
+}
+.second-page {
+  background-color: #282424;
+  scrollbar-width: none;
+  padding-bottom: 50%;
+}
+.third-page {
+  background-color: #FAF9F6;
+  scrollbar-width: none;
+  position: relative;
 }
 
 .main-page::-webkit-scrollbar {
@@ -64,6 +73,7 @@ a {
 
 section {
   min-height: 100vh;
+  position: relative; 
 }
 
 .fixed-top {
